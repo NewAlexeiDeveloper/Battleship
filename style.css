@@ -1,0 +1,120 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+body{
+    background-color: #333;
+}
+
+.container{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+.align-center{
+    margin: 4vmin;
+    display: grid;
+    grid-template-rows: repeat(10, 4.5vmin);
+    grid-template-columns: repeat(10, 4.5vmin);
+}
+
+.user-board, .computer-board{
+    background-color: rgb(17, 153, 216);
+}
+
+.take-ship-board{
+    background-color: grey;
+    width: 400px;
+    height: 400px;
+    margin: 10px;
+}
+.take-ship-board.vertical{
+    background-color: grey;
+    width: 400px;
+    height: 400px;
+    margin: 10px;
+    display: flex;
+}
+
+.play-navigation{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    color: white;
+}
+.play-navigation button{
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-right: 10px;
+    color: rgb(221, 92, 114);
+    outline: none;
+}
+.play-navigation .active:active{
+    transform: scale(0.9);
+}
+
+.square{
+    border: 1px solid black;
+}
+.ship{
+    border-radius: 2vmin;
+}
+.ship > div{
+    width: 4.5vmin;
+    height: 4.5vmin;
+}
+.ship.vertical{
+    height: calc(4.5vmin * var(--height));
+    width: 4.5vmin !important;
+}
+.invisible{
+    background-color: rgb(17, 153, 216) !important;
+}
+
+/* Ships */
+.ship1{
+    background-color: pink;
+}
+.ship1.vertical{
+    --height: 3;
+    background-color: pink;
+}
+.ship2{
+    background-color: greenyellow;
+}
+.ship2.vertical{
+    --height: 4;
+    background-color: greenyellow;
+}
+.ship3{
+    background-color: goldenrod;
+}
+.ship3.vertical{
+    --height: 4;
+    background-color: goldenrod;
+}
+.ship4{
+    background-color: orange;
+}
+.ship4.vertical{
+    --height: 5;
+    background-color: orange;
+}
+.ship5{
+    background-color: salmon;
+}
+.ship5.vertical{
+    --height: 6;
+    background-color: salmon;
+}
+
+/* Game */
+.miss{
+    background-color: grey;
+}
+.shot{
+    background-color: red !important;
+}
