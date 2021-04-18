@@ -233,6 +233,13 @@ function drop() {
         if (!not_allowed_horizontally && !square_is_busy) {
             for (let i = targetSquare; i < (targetSquare + lengthOfDraggedShip); i++) {
                 userSquares[i].classList.add(requiredClassName, 'taken')
+                // Make border-radius for the utmost squsare
+                if (i == targetSquare) {
+                    userSquares[i].classList.add('border-top-left-radius', 'border-bottom-left-radius')
+                }
+                if (i == (targetSquare + lengthOfDraggedShip) - 1) {
+                    userSquares[i].classList.add('border-top-right-radius', 'border-bottom-right-radius')
+                }
             }
             // Remove the ship from the board
             takeShipBoard.removeChild(draggedShip)
@@ -258,6 +265,13 @@ function drop() {
         if (!not_allowed_vertically && !square_is_busy) {
             for (let i = 0; i < lengthOfDraggedShip; i++) {
                 userSquares[targetSquare + i * 10].classList.add(targetClass, 'taken')
+                // Make border-radius for the utmost squsare
+                if (i == 0) {
+                    userSquares[targetSquare + i * 10].classList.add('border-top-left-radius', 'border-top-right-radius')
+                }
+                if (i == lengthOfDraggedShip - 1) {
+                    userSquares[targetSquare + i * 10].classList.add('border-bottom-left-radius', 'border-bottom-right-radius')
+                }
             }
             // Remove the ship from the board
             takeShipBoard.removeChild(draggedShip)

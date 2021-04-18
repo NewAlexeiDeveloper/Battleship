@@ -119,6 +119,19 @@ body{
     --height: 6;
 }
 
+/* make border-radius for utter squares*/
+.border-top-left-radius{
+    border-top-left-radius: 2vmin;
+}
+.border-bottom-left-radius{
+    border-bottom-left-radius: 2vmin;
+}
+.border-bottom-right-radius{
+    border-bottom-right-radius: 2vmin;
+}
+.border-top-right-radius{
+    border-top-right-radius: 2vmin;
+}
 
 /* Game */
 .miss{
