@@ -120,16 +120,20 @@ body{
 }
 
 /* make border-radius for utter squares*/
-.border-top-left-radius{
+.border-top-left-radius,
+.border-top-left-radius::before{
     border-top-left-radius: 2vmin;
 }
-.border-bottom-left-radius{
+.border-bottom-left-radius,
+.border-bottom-left-radius::before{
     border-bottom-left-radius: 2vmin;
 }
-.border-bottom-right-radius{
+.border-bottom-right-radius,
+.border-bottom-right-radius::before{
     border-bottom-right-radius: 2vmin;
 }
-.border-top-right-radius{
+.border-top-right-radius,
+.border-top-right-radius::before{
     border-top-right-radius: 2vmin;
 }
 
@@ -140,3 +144,40 @@ body{
 .shot{
     background-color: red !important;
 }
+
+
+/* Animation */
+.animation{
+    position: relative;
+}
+.animation::before{
+    position: absolute;
+    content: '';
+    border: .4vmin solid white;
+    top: -1px;
+    bottom: -1px;
+    left: -1px;
+    right: -1px;
+}
+.animation-horizontal::before{
+    border-left: none;
+    border-right: none;
+    animation: moveWaves 3s linear infinite;
+}
+.animation-vertical::before{
+    border-top: none;
+    border-bottom: none;
+    animation: moveWaves 3s linear infinite;
+}
+
+@keyframes moveWaves{
+    0%{
+        opacity: 1;
+        transform: scale(1);
+    }
+    100%{
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+ 

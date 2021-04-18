@@ -232,7 +232,7 @@ function drop() {
         // Draw a ship
         if (!not_allowed_horizontally && !square_is_busy) {
             for (let i = targetSquare; i < (targetSquare + lengthOfDraggedShip); i++) {
-                userSquares[i].classList.add(requiredClassName, 'taken')
+                userSquares[i].classList.add(requiredClassName, 'taken', 'animation', 'animation-horizontal')
                 // Make border-radius for the utmost squsare
                 if (i == targetSquare) {
                     userSquares[i].classList.add('border-top-left-radius', 'border-bottom-left-radius')
@@ -264,7 +264,7 @@ function drop() {
         let targetClass = splittedClass[0]
         if (!not_allowed_vertically && !square_is_busy) {
             for (let i = 0; i < lengthOfDraggedShip; i++) {
-                userSquares[targetSquare + i * 10].classList.add(targetClass, 'taken')
+                userSquares[targetSquare + i * 10].classList.add(targetClass, 'taken', 'animation', 'animation-vertical')
                 // Make border-radius for the utmost squsare
                 if (i == 0) {
                     userSquares[targetSquare + i * 10].classList.add('border-top-left-radius', 'border-top-right-radius')
