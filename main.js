@@ -127,31 +127,63 @@ const createShipsForUser = () => {
     })
 }
 createShipsForUser()
+
+
 // Rotate ships         
-rotateButton.addEventListener('click', () => {
+function rotateShips() {
     let allShipsOnTheBoard = takeShipBoard.childNodes
-    if (takeShipBoard.classList.contains('vertical')) {
-        takeShipBoard.className = 'take-ship-board'
-        // remove vertical class
-        allShipsOnTheBoard.forEach(ship => {
-            let shipClassAttribute = ship.className
-            let split = shipClassAttribute.split(' ')
-            let shipName = split[0]
-            let findShipInGeneralArray = ships.find(ship => ship.name == shipName)
-            let indexForShipWidth = findShipInGeneralArray.position[0].length
-            ship.classList.remove('vertical')
-            ship.style.width = (indexForShipWidth * 4.5) + 'vmin'
-            ship.style.marginBottom = '15px'
-            ship.style.flexWrap = 'nowrap'
-        })
+    // if the game is over then create ships that adequate to the rotateBtn class
+    if (isGameOver) {
+        if (takeShipBoard.classList.contains('vertical')) {
+            takeShipBoard.classList.add('vertical')
+            allShipsOnTheBoard.forEach(ship => {
+                ship.classList.add('vertical')
+                ship.style.marginRight = '25px'
+                ship.style.flexWrap = 'wrap'
+            })
+        } else {
+            takeShipBoard.className = 'take-ship-board'
+            // remove vertical class
+            allShipsOnTheBoard.forEach(ship => {
+                let shipClassAttribute = ship.className
+                let split = shipClassAttribute.split(' ')
+                let shipName = split[0]
+                let findShipInGeneralArray = ships.find(ship => ship.name == shipName)
+                let indexForShipWidth = findShipInGeneralArray.position[0].length
+                ship.classList.remove('vertical')
+                ship.style.width = (indexForShipWidth * 4.5) + 'vmin'
+                ship.style.marginBottom = '15px'
+                ship.style.flexWrap = 'nowrap'
+            })
+        }
+        // Normal game restart
     } else {
-        takeShipBoard.classList.add('vertical')
-        allShipsOnTheBoard.forEach(ship => {
-            ship.classList.add('vertical')
-            ship.style.marginRight = '25px'
-            ship.style.flexWrap = 'wrap'
-        })
+        if (takeShipBoard.classList.contains('vertical')) {
+            takeShipBoard.className = 'take-ship-board'
+            // remove vertical class
+            allShipsOnTheBoard.forEach(ship => {
+                let shipClassAttribute = ship.className
+                let split = shipClassAttribute.split(' ')
+                let shipName = split[0]
+                let findShipInGeneralArray = ships.find(ship => ship.name == shipName)
+                let indexForShipWidth = findShipInGeneralArray.position[0].length
+                ship.classList.remove('vertical')
+                ship.style.width = (indexForShipWidth * 4.5) + 'vmin'
+                ship.style.marginBottom = '15px'
+                ship.style.flexWrap = 'nowrap'
+            })
+        } else {
+            takeShipBoard.classList.add('vertical')
+            allShipsOnTheBoard.forEach(ship => {
+                ship.classList.add('vertical')
+                ship.style.marginRight = '25px'
+                ship.style.flexWrap = 'wrap'
+            })
+        }
     }
+}
+rotateButton.addEventListener('click', () => {
+    rotateShips()
 })
 
 // Allow to drag ships
@@ -273,13 +305,16 @@ startButton.addEventListener('click', () => {
                         userMove = false
                         startGame()
                         moveInfo.textContent = 'Computer move'
+                        moveInfo.style.color = 'red'
                     }
                 } else if (square.classList.contains('shot') || square.classList.contains('miss')) {
                     moveInfo.textContent = 'This square was already fired, choose another one'
+                    moveInfo.style.color = 'red'
                 } else {
                     square.classList.add('miss')
                     userMove = false
                     moveInfo.textContent = 'Computer move'
+                    moveInfo.style.color = 'red'
                     startGame()
                 }
             }
@@ -316,11 +351,13 @@ startButton.addEventListener('click', () => {
                     } else {
                         userMove = true
                         moveInfo.textContent = 'Your move'
+                        moveInfo.style.color = 'green'
                         startGame()
                     }
                 } else {
                     freeSquares[random].classList.add('miss')
                     moveInfo.textContent = 'Your move'
+                    moveInfo.style.color = 'green'
                     userMove = true
                     startGame()
                 }
@@ -335,8 +372,12 @@ startButton.addEventListener('click', () => {
         let lengthOfLeftShips = allShipsOnTheBoard.length
         if (lengthOfLeftShips !== 0) {
             moveInfo.textContent = 'Before starting a game you must put all ships on the board'
+            moveInfo.style.color = 'red'
+            moveInfo.style.backgroundColor = 'rgb(194, 228, 238)'
         } else {
             moveInfo.textContent = 'Your move'
+            moveInfo.style.color = 'green'
+            moveInfo.style.backgroundColor = 'rgb(194, 228, 238)'
             startGame()
         }
     } else {
@@ -346,6 +387,8 @@ startButton.addEventListener('click', () => {
         computerSquares.forEach(square => square.className = 'square')
         // Create ships for a user and computer
         createShipsForUser()
+        // Check the value of rotate button and create the same ships
+        rotateShips()
         ships.forEach(ship => generateShipsRandomlyForComputer(ship))
         let allShipsOnTheBoard = takeShipBoard.childNodes
         allShipsOnTheBoard.forEach(ship => ship.addEventListener('dragstart', dragstart))
@@ -367,8 +410,10 @@ startButton.addEventListener('click', () => {
         startButton.textContent = 'Start'
         // Change the rotate button style
         rotateButton.disabled = false
-        rotateButton.style.background = 'white'
+        rotateButton.style.background = 'rgb(239, 239, 239)'
         rotateButton.style.border = ''
         rotateButton.classList.add('active')
+        // Remove background from info table
+        moveInfo.style.backgroundColor = ''
     }
 })
