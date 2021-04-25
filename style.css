@@ -138,15 +138,45 @@ body{
 }
 
 /* Game */
-.miss{
+.miss, .shot{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.miss::after,
+.shot::after{
+    position: absolute;
+    content: '';
+    border-radius: 100%;
+    width: 2vmin;
+    height: 2vmin;
+}
+.miss::after{
     background-color: grey;
 }
-.shot{
-    background-color: red !important;
+.shot::after{
+    background-color: red;
+}
+
+.miss::before,
+.shot::before{
+    content: '';
+    position: absolute;
+    border: 1vmin solid white;
+    animation: hit .5s ease-out forwards;
+    border-radius: 100%;
+    height: 2vmin;
+    width: 2vmin;
+}
+.shot::before{
+    border-color: red;
 }
 
 
 /* Animation */
+.removeAnimation::before{
+    animation: removeAnimation .1s ease-out forwards !important;
+}
 .animation{
     position: relative;
 }
@@ -180,4 +210,24 @@ body{
         transform: scale(1.5);
     }
 }
+
+@keyframes hit{
+    0%{
+        opacity: 1;
+        transform: scale(1);
+    }
+    50%{
+        opacity: 0;
+        transform: scale(3);
+    }
+    100%{
+        transform: scale(0);
+        opacity: 0;
+    }
+}
  
+@keyframes removeAnimation{
+    100%{
+        opacity: 0;
+    }
+}

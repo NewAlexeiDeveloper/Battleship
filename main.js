@@ -356,6 +356,7 @@ startButton.addEventListener('click', () => {
                     if (className == 'ship5') ship5IsTakenComputer++
                     // Change the square
                     freeSquares[random].classList.add('shot')
+                    freeSquares[random].classList.add('removeAnimation')
                     // check for win conditions
                     if (ship1IsTakenComputer == 3 && ship2IsTakenComputer == 4 && ship3IsTakenComputer == 4 && ship4IsTakenComputer == 5 && ship5IsTakenComputer == 6) {
                         isGameOver = true
