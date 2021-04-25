@@ -152,6 +152,7 @@ function rotateShips() {
                 let indexForShipWidth = findShipInGeneralArray.position[0].length
                 ship.classList.remove('vertical')
                 ship.style.width = (indexForShipWidth * 4.5) + 'vmin'
+                ship.style.height = '4.5vmin'
                 ship.style.marginBottom = '15px'
                 ship.style.flexWrap = 'nowrap'
             })
@@ -394,12 +395,15 @@ startButton.addEventListener('click', () => {
             moveInfo.style.color = 'green'
             moveInfo.style.backgroundColor = 'rgb(194, 228, 238)'
             startGame()
+            takeShipBoard.style.opacity = 0
         }
     } else {
         // The game should be restarted
         // Clear boards
         userSquares.forEach(square => square.className = 'square')
         computerSquares.forEach(square => square.className = 'square')
+        // Display takeShipBoard
+        takeShipBoard.style.opacity = 1
         // Create ships for a user and computer
         createShipsForUser()
         // Check the value of rotate button and create the same ships
