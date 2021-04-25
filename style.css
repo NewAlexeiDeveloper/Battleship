@@ -12,29 +12,41 @@ body{
     width: 100%;
     justify-content: center;
 }
+.align-takeShipBoard{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 2rem;
+}
 .align-center{
     margin: 4vmin;
     display: grid;
     grid-template-rows: repeat(10, 4.5vmin);
     grid-template-columns: repeat(10, 4.5vmin);
 }
+.alignTakingShips{
+    width: 45vmin;
+    height: 45vmin;
+    margin: 4vmin;
+}
 
 .user-board, .computer-board{
     background-color: rgb(17, 153, 216);
+    position: relative;
 }
 
 .take-ship-board{
-    background-color: grey;
-    width: 400px;
-    height: 400px;
-    margin: 10px;
+    background-color: rgb(17, 153, 216);
+    width: 45vmin;
+    height: 45vmin;
+    margin: 4vmin;
 }
 .take-ship-board.vertical{
-    background-color: grey;
-    width: 400px;
-    height: 400px;
-    margin: 10px;
+    background-color: rgb(17, 153, 216);
     display: flex;
+    width: 45vmin;
+    height: 45vmin;
+    margin: 4vmin;
 }
 
 
@@ -88,32 +100,20 @@ body{
 }
 
 
-.ship1{
-    background-color: pink;
+.ship1, .ship2, .ship3, .ship4, .ship5{
+    background-color: rgba(201, 189, 189, 0.87);
 }
 .ship1.vertical{
     --height: 3;
 }
-.ship2{
-    background-color: greenyellow;
-}
 .ship2.vertical{
     --height: 4;
-}
-.ship3{
-    background-color: goldenrod;
 }
 .ship3.vertical{
     --height: 4;
 }
-.ship4{
-    background-color: orange;
-}
 .ship4.vertical{
     --height: 5;
-}
-.ship5{
-    background-color: salmon;
 }
 .ship5.vertical{
     --height: 6;

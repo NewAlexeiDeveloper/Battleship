@@ -176,7 +176,7 @@ function rotateShips() {
             takeShipBoard.classList.add('vertical')
             allShipsOnTheBoard.forEach(ship => {
                 ship.classList.add('vertical')
-                ship.style.marginRight = '25px'
+                ship.style.marginRight = '4vmin'
                 ship.style.flexWrap = 'wrap'
             })
         }
