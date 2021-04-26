@@ -1,10 +1,10 @@
 const startButton = document.getElementById('start')
-const rotateButton = document.getElementById('rotate')
-const moveInfo = document.getElementById('move')
-const userBoard = document.querySelector('.user-board')
-const computerBoard = document.querySelector('.computer-board')
-const takeShipBoard = document.querySelector('.take-ship-board')
-const ships = [
+rotateButton = document.getElementById('rotate')
+moveInfo = document.getElementById('move')
+userBoard = document.querySelector('.user-board')
+computerBoard = document.querySelector('.computer-board')
+takeShipBoard = document.querySelector('.take-ship-board')
+ships = [
     {
         name: 'ship1',
         position: [[0, 1, 2], [0, 10, 20]]
@@ -26,8 +26,8 @@ const ships = [
         position: [[0, 1, 2, 3, 4, 5], [0, 10, 20, 30, 40, 50]]
     }
 ]
-const forbiddenHorizontally = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 2, 12, 22, 32, 42, 52, 62, 72, 82, 92, 3, 13, 23, 33, 43, 53, 63, 73, 83, 93, 4, 14, 24, 34, 44, 54, 64, 74, 84, 94, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95]
-const forbiddenVertically = [90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]
+forbiddenHorizontally = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 2, 12, 22, 32, 42, 52, 62, 72, 82, 92, 3, 13, 23, 33, 43, 53, 63, 73, 83, 93, 4, 14, 24, 34, 44, 54, 64, 74, 84, 94, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95]
+forbiddenVertically = [90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]
 
 
 let userSquares = [],
@@ -46,6 +46,18 @@ let ship2IsTakenUser = 0
 let ship3IsTakenUser = 0
 let ship4IsTakenUser = 0
 let ship5IsTakenUser = 0
+
+
+// These variables are for smart computer
+const topSquares = [1, 2, 3, 4, 5, 6, 7, 8],
+    bottomSquares = [91, 92, 93, 94, 95, 96, 97, 98],
+    leftSquares = [10, 20, 30, 40, 50, 60, 70, 80],
+    rightSquares = [19, 29, 39, 49, 59, 69, 79, 89]
+
+let theFirstSquareIDFiredByComputer,
+    theFirstSquareIsNotFired = true,
+    theSecondSquareToShoot
+
 
 
 // All that is required after the page is loaded 
@@ -344,8 +356,71 @@ startButton.addEventListener('click', () => {
                     }
                 })
                 // Create a random number to fire
-                let random = Math.floor(Math.random() * lengthOfFreeSquares)
+                let random
+                if (theFirstSquareIsNotFired) {
+                    random = Math.floor(Math.random() * lengthOfFreeSquares)
+                } else {
+                    // SMART COMPUTER
+                    // Create a target variable so that all the below functions can be adjusted to it
+                    let target
+                    if (!theFirstSquareIsNotFired) {
+                        target = theFirstSquareIDFiredByComputer
+                    }
+
+
+                    const TopLeftSquare = target == 0 ? true : false
+                    const TopRightSquare = target == 9 ? true : false
+                    const BottomLeftSquare = target == 90 ? true : false
+                    const BottomRightSquare = target == 99 ? true : false
+                    const topSquares = [1, 2, 3, 4, 5, 6, 7, 8].includes(target)
+                    const bottomSquares = [91, 92, 93, 94, 95, 96, 97, 98].includes(target)
+                    const leftSquares = [10, 20, 30, 40, 50, 60, 70, 80].includes(target)
+                    const rightSquares = [19, 29, 39, 49, 59, 69, 79, 89].includes(target)
+                    // Create conditions to fire depending on the position of the first fired square
+                    if (TopLeftSquare) {
+                        let getRandom = Math.floor(Math.random() * 2)
+                    } else if (TopRightSquare) {
+
+                    } else if (BottomLeftSquare) {
+
+                    } else if (BottomRightSquare) {
+
+                    } else if (topSquares) {
+
+                    } else if (bottomSquares) {
+
+                    } else if (leftSquares) {
+
+                    } else if (rightSquares) {
+
+                    } else {
+                        function findSquareToFire() {
+                            const directions = [10, -10, 1, -1]
+                            let getRandom = Math.floor(Math.random() * 4)
+                            let theSecondSquareIDToFire = Number(theFirstSquareIDFiredByComputer) + (directions[getRandom])
+                            // Check if this square is already fired
+                            let test = freeSquares.find(square => square.getAttribute('data-id') == theSecondSquareIDToFire)
+                            if (test == undefined) {
+                                findSquareToFire()
+                            } else {
+                                // get index of this square in freeSquares array
+                                random = freeSquares.findIndex(square => square.getAttribute('data-id') == theSecondSquareIDToFire)
+                                console.log(random)
+                            }
+                        }
+                        findSquareToFire()
+                    }
+                    // SMART COMPUTER
+                }
+
+
                 if (freeSquares[random].classList.contains('taken')) {
+                    console.log(freeSquares)
+                    // check if it is a first square
+                    theFirstSquareIDFiredByComputer = theFirstSquareIsNotFired == true ? freeSquares[random].getAttribute('data-id') : ''
+                    if (theFirstSquareIDFiredByComputer.match(/\d/)) theFirstSquareIsNotFired = false
+
+
                     let ClassNameOfSquare = freeSquares[random].getAttribute('class')
                     let splittedClassName = ClassNameOfSquare.split(' ')
                     let className = splittedClassName[1]
