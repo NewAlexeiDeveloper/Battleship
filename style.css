@@ -160,16 +160,16 @@ body{
 
 .miss::before,
 .shot::before{
-    content: '';
-    position: absolute;
-    border: 1vmin solid white;
-    animation: hit .5s ease-out forwards;
-    border-radius: 100%;
-    height: 2vmin;
-    width: 2vmin;
+    content: '' !important;
+    position: absolute !important;
+    border: 1vmin solid white !important;
+    animation: hit .5s ease-out forwards !important;
+    border-radius: 100% !important;
+    height: 2vmin !important;
+    width: 2vmin !important;
 }
 .shot::before{
-    border-color: red;
+    border-color: red !important;
 }
 
 
