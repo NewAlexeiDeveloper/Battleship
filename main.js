@@ -35,6 +35,8 @@ let userSquares = [],
     userMove = true,
     isGameOver = false,
     isGameWin = false,
+    notAllowFiringUntilAllShipsArePutted = false,
+    notAllowComputerFireUntilTheGameIsNotRestarted,
     ship1IsTakenComputer = 0,
     ship2IsTakenComputer = 0,
     ship3IsTakenComputer = 0,
@@ -81,7 +83,7 @@ function detect() {
         preventDefault(detect)
     } else if (detect.classList.contains('shot')) {
         random = freeSquares.findIndex(square => square.getAttribute('data-id') == theFirstSquareIDFiredByComputer + (-variableToRememberDirectionToFire * variableForDetect_direction_random))
-        // If random is undefined (was fired) then create a random
+        // If random is -1 (was fired or not found) then create a random
         if (random == -1) {
             preventDefault(random)
         }
@@ -389,53 +391,74 @@ function drop() {
 }
 
 // Start a game
-startButton.addEventListener('click', () => {
-    // Initialize the start function
-    function startGame() {
+startButton.addEventListener('click', () => startGame())
+// Initialize the start function
+function startGame() {
+    // For cases when a game was restarted
+    let allShipsOnTheBoard = takeShipBoard.childNodes
+    if (notAllowFiringUntilAllShipsArePutted && allShipsOnTheBoard.length == 0) {
+        notAllowFiringUntilAllShipsArePutted = false
+        isGameOver = false
+        isGameWin = false
+        userMove = false
+        notAllowComputerFireUntilTheGameIsNotRestarted = true
+        startGame()
+        return
+    }
+
+    if (userMove) {
         // Secure methods to stop game 
         if (isGameWin || isGameOver) return
-        if (userMove) {
-            moveInfo.textContent = 'Your move'
-            computerSquares.forEach(square => square.addEventListener('click', () => userGame(square)))
-            function userGame(square) {
-                if (!userMove || isGameWin || isGameOver) return
-                // check if user missed or not
-                if (square.classList.contains('taken')) {
-                    square.classList.add('shot')
-                    square.classList.remove('taken')
-                    let splittedClassName = square.getAttribute('class').split(' ')
-                    let shipName = splittedClassName[1]
-                    // increment numbers of taken squares
-                    if (shipName == 'ship1') ship1IsTakenUser++
-                    if (shipName == 'ship2') ship2IsTakenUser++
-                    if (shipName == 'ship3') ship3IsTakenUser++
-                    if (shipName == 'ship4') ship4IsTakenUser++
-                    if (shipName == 'ship5') ship5IsTakenUser++
-                    // check for win conditions 
-                    if (ship1IsTakenUser == 3 && ship2IsTakenUser == 4 && ship3IsTakenUser == 4 && ship4IsTakenUser == 5 && ship5IsTakenUser == 6) {
-                        isGameWin = true
-                        moveInfo.textContent = 'You won!'
-                        startButton.classList.add('restart')
-                        startButton.textContent = 'Restart'
-                    } else {
-                        userMove = false
-                        startGame()
-                        moveInfo.textContent = 'Computer move'
-                        moveInfo.style.color = 'red'
-                    }
-                } else if (square.classList.contains('shot') || square.classList.contains('miss')) {
-                    moveInfo.textContent = 'This square was already fired, choose another one'
-                    moveInfo.style.color = 'red'
+        moveInfo.textContent = 'Your move'
+        moveInfo.style.backgroundColor = 'rgb(194, 228, 238)'
+        computerSquares.forEach(square => square.addEventListener('click', () => userGame(square)))
+        function userGame(square) {
+            if (!userMove || isGameWin || isGameOver || rotateButton.classList.contains('active')) return
+            // check if user missed or not
+            if (square.classList.contains('taken')) {
+                square.classList.add('shot')
+                square.classList.remove('taken')
+                let splittedClassName = square.getAttribute('class').split(' ')
+                let shipName = splittedClassName[1]
+                // increment numbers of taken squares
+                if (shipName == 'ship1') ship1IsTakenUser++
+                if (shipName == 'ship2') ship2IsTakenUser++
+                if (shipName == 'ship3') ship3IsTakenUser++
+                if (shipName == 'ship4') ship4IsTakenUser++
+                if (shipName == 'ship5') ship5IsTakenUser++
+                // check for win conditions 
+                if (ship1IsTakenUser == 3 && ship2IsTakenUser == 4 && ship3IsTakenUser == 4 && ship4IsTakenUser == 5 && ship5IsTakenUser == 6) {
+                    isGameWin = true
+                    moveInfo.textContent = 'You won!'
+                    startButton.classList.add('restart')
+                    startButton.textContent = 'Restart'
+                    startButton.disabled = false
+                    startButton.style.background = 'rgb(239 239 239)'
+                    notAllowFiringUntilAllShipsArePutted = true
                 } else {
-                    square.classList.add('miss')
                     userMove = false
+                    startGame()
                     moveInfo.textContent = 'Computer move'
                     moveInfo.style.color = 'red'
-                    startGame()
                 }
+            } else if (square.classList.contains('shot') || square.classList.contains('miss')) {
+                moveInfo.textContent = 'This square was already fired, choose another one'
+                moveInfo.style.color = 'red'
+            } else {
+                square.classList.add('miss')
+                userMove = false
+                startGame()
+                moveInfo.textContent = 'Computer move'
+                moveInfo.style.color = 'red'
             }
+        }
+    } else {
+        if (notAllowComputerFireUntilTheGameIsNotRestarted) {
+
         } else {
             setTimeout(() => {
+                // Secure methods to stop game
+                if (isGameWin || isGameOver) return
                 let lengthOfFreeSquares = 0
                 freeSquares = []
                 userSquares.forEach(square => {
@@ -458,135 +481,107 @@ startButton.addEventListener('click', () => {
                         target = variableToRememberTheIdOFLastSuccessfullyFiredSquare + variableToRememberDirectionToFire
                     }
 
-
-                    const TopLeftSquare = target == 0 ? true : false
-                    const TopRightSquare = target == 9 ? true : false
-                    const BottomLeftSquare = target == 90 ? true : false
-                    const BottomRightSquare = target == 99 ? true : false
-                    const topSquares = [1, 2, 3, 4, 5, 6, 7, 8].includes(target)
-                    const bottomSquares = [91, 92, 93, 94, 95, 96, 97, 98].includes(target)
-                    const leftSquares = [10, 20, 30, 40, 50, 60, 70, 80].includes(target)
-                    const rightSquares = [19, 29, 39, 49, 59, 69, 79, 89].includes(target)
-                    // Create conditions to fire depending on the position of the fired square
-                    if (TopLeftSquare || TopRightSquare || BottomLeftSquare || BottomRightSquare || topSquares || bottomSquares || leftSquares || rightSquares) {
-                        // This is for a situation when a few squares were already destroyer
-                        if (twoSquaresAreFiredSuccessfully) {
-                            // In case if the computer moving back then set all the values to initial point and return
-                            if (theFirstSquareIsFiredMovingBackward) {
-                                twoSquaresAreFiredSuccessfully = false
-                                theFirstSquareIsFiredMovingBackward = false
-                                listiningForComputerToFireWithAlgorithms = false
-                                theFirstSquareIsNotFired = true
-                            } else { //Here we've reached the margin and now we would need to return back
+                    if (twoSquaresAreFiredSuccessfully) {
+                        if (theFirstSquareIsFiredMovingBackward) {
+                            theFirstSquareIsFiredMovingBackward = false
+                            theSecondSquareIsFiredMovingBackward = true
+                            detect()
+                            variableForDetect_direction++
+                            variableForDetect_direction_random++
+                        } else if (theSecondSquareIsFiredMovingBackward) {
+                            theSecondSquareIsFiredMovingBackward = false
+                            theThirdSquareIsFiredMovingBackward = true
+                            detect()
+                            variableForDetect_direction++
+                            variableForDetect_direction_random++
+                        } else if (theThirdSquareIsFiredMovingBackward) {
+                            theThirdSquareIsFiredMovingBackward = false
+                            theFourthSquareIsFiredMovingBackward = true
+                            detect()
+                            variableForDetect_direction++
+                            variableForDetect_direction_random++
+                        } else if (theFourthSquareIsFiredMovingBackward) {
+                            theFourthSquareIsFiredMovingBackward = false
+                            theFifthSquareIsFiredMovingBackward = true
+                            detect()
+                            variableForDetect_direction++
+                            variableForDetect_direction_random++
+                        } else if (theFifthSquareIsFiredMovingBackward) {
+                            theFifthSquareIsFiredMovingBackward = false
+                            theSixthSquareIsFiredMovingBackward = true
+                            detect()
+                            variableForDetect_direction++
+                            variableForDetect_direction_random++
+                        } else if (theSixthSquareIsFiredMovingBackward) {
+                            theSixthSquareIsFiredMovingBackward = false
+                            theSeventhSquareIsFiredMovingBackward = true
+                            detect()
+                            variableForDetect_direction++
+                            variableForDetect_direction_random++
+                        } else if (theSeventhSquareIsFiredMovingBackward) {
+                            theSeventhSquareIsFiredMovingBackward = false
+                            theEighthSquareIsFiredMovingBackward = true
+                            detect()
+                            variableForDetect_direction++
+                            variableForDetect_direction_random++
+                        } else if (theEighthSquareIsFiredMovingBackward) {
+                            theEighthSquareIsFiredMovingBackward = false
+                            theNinethSquareIsFiredMovingBackward = true
+                            detect()
+                            variableForDetect_direction++
+                            variableForDetect_direction_random++
+                        } else if (theNinethSquareIsFiredMovingBackward) {
+                            variableForDetect_direction = 1
+                            variableForDetect_direction_random = 2
+                            theNinethSquareIsFiredMovingBackward = false
+                        } else {
+                            // Check if the next square is already fired
+                            let test = freeSquares.find(square => square.getAttribute('data-id') == target)
+                            // If not then fire otherwise return to the first one and move in another direction
+                            if (test == undefined) {
                                 theFirstSquareIsFiredMovingBackward = true
                                 random = freeSquares.findIndex(square => square.getAttribute('data-id') == theFirstSquareIDFiredByComputer + (-variableToRememberDirectionToFire))
                                 preventDefault(random)
-                            }
-                        }
-                    } else {
-                        // When 2 squares are fired successfully I need to create another function as an ordinary one will not work correctly
-                        if (twoSquaresAreFiredSuccessfully) {
-                            if (theFirstSquareIsFiredMovingBackward) {
-                                theFirstSquareIsFiredMovingBackward = false
-                                theSecondSquareIsFiredMovingBackward = true
-                                detect()
-                                variableForDetect_direction++
-                                variableForDetect_direction_random++
-                            } else if (theSecondSquareIsFiredMovingBackward) {
-                                theSecondSquareIsFiredMovingBackward = false
-                                theThirdSquareIsFiredMovingBackward = true
-                                detect()
-                                variableForDetect_direction++
-                                variableForDetect_direction_random++
-                            } else if (theThirdSquareIsFiredMovingBackward) {
-                                theThirdSquareIsFiredMovingBackward = false
-                                theFourthSquareIsFiredMovingBackward = true
-                                detect()
-                                variableForDetect_direction++
-                                variableForDetect_direction_random++
-                            } else if (theFourthSquareIsFiredMovingBackward) {
-                                theFourthSquareIsFiredMovingBackward = false
-                                theFifthSquareIsFiredMovingBackward = true
-                                detect()
-                                variableForDetect_direction++
-                                variableForDetect_direction_random++
-                            } else if (theFifthSquareIsFiredMovingBackward) {
-                                theFifthSquareIsFiredMovingBackward = false
-                                theSixthSquareIsFiredMovingBackward = true
-                                detect()
-                                variableForDetect_direction++
-                                variableForDetect_direction_random++
-                            } else if (theSixthSquareIsFiredMovingBackward) {
-                                theSixthSquareIsFiredMovingBackward = false
-                                theSeventhSquareIsFiredMovingBackward = true
-                                detect()
-                                variableForDetect_direction++
-                                variableForDetect_direction_random++
-                            } else if (theSeventhSquareIsFiredMovingBackward) {
-                                theSeventhSquareIsFiredMovingBackward = false
-                                theEighthSquareIsFiredMovingBackward = true
-                                detect()
-                                variableForDetect_direction++
-                                variableForDetect_direction_random++
-                            } else if (theEighthSquareIsFiredMovingBackward) {
-                                theEighthSquareIsFiredMovingBackward = false
-                                theNinethSquareIsFiredMovingBackward = true
-                                detect()
-                                variableForDetect_direction++
-                                variableForDetect_direction_random++
-                            } else if (theNinethSquareIsFiredMovingBackward) {
                                 variableForDetect_direction = 1
                                 variableForDetect_direction_random = 2
-                                theNinethSquareIsFiredMovingBackward = false
                             } else {
-                                // Check if the next square is already fired
-                                let test = freeSquares.find(square => square.getAttribute('data-id') == target)
-                                // If not then fire otherwise return to the first one and move in another direction
-                                if (test == undefined) {
-                                    theFirstSquareIsFiredMovingBackward = true
-                                    random = freeSquares.findIndex(square => square.getAttribute('data-id') == theFirstSquareIDFiredByComputer + (-variableToRememberDirectionToFire))
-                                    preventDefault(random)
-                                    variableForDetect_direction = 1
-                                    variableForDetect_direction_random = 2
-                                } else {
-                                    random = freeSquares.findIndex(square => square.getAttribute('data-id') == target)
-                                    preventDefault(random)
-                                }
+                                random = freeSquares.findIndex(square => square.getAttribute('data-id') == target)
+                                preventDefault(random)
                             }
-
-                        } else {
-                            function findSquareToFire() {
-                                const directions = [10, -10, 1, -1]
-                                // Check if all the four squares are destroyed
-                                let firstSquare = freeSquares.find(square => square.getAttribute('data-id') == Number(theFirstSquareIDFiredByComputer) + (directions[0]))
-                                let secondSquare = freeSquares.find(square => square.getAttribute('data-id') == Number(theFirstSquareIDFiredByComputer) + (directions[1]))
-                                let thirdSquare = freeSquares.find(square => square.getAttribute('data-id') == Number(theFirstSquareIDFiredByComputer) + (directions[2]))
-                                let fourthSquare = freeSquares.find(square => square.getAttribute('data-id') == Number(theFirstSquareIDFiredByComputer) + (directions[3]))
-                                if (firstSquare == undefined && secondSquare == undefined && thirdSquare == undefined && fourthSquare == undefined) {
-                                    preventDefault(undefined)
-                                } else {
-                                    let getRandom = Math.floor(Math.random() * directions.length)
-                                    let theSecondSquareIDToFire = Number(theFirstSquareIDFiredByComputer) + (directions[getRandom])
-                                    // Check if this square is already fired
-                                    let test = freeSquares.find(square => square.getAttribute('data-id') == theSecondSquareIDToFire)
-                                    if (test == undefined) {
-                                        // Remvove random element from directions, so that it will no longer be used
-                                        directions.splice(getRandom, 1)
-                                        findSquareToFire()
-                                    } else {
-                                        // get index of this square in freeSquares array
-                                        random = freeSquares.findIndex(square => square.getAttribute('data-id') == theSecondSquareIDToFire)
-                                        preventDefault(random)
-                                        variableToRememberDirectionToFire = directions[getRandom]
-                                        listiningForComputerToFireWithAlgorithms = true
-                                    }
-                                }
-
-
-
-                            }
-                            findSquareToFire()
                         }
+
+                    } else {
+                        function findSquareToFire() {
+                            const directions = [10, -10, 1, -1]
+                            // Check if all the four squares are destroyed
+                            let firstSquare = freeSquares.find(square => square.getAttribute('data-id') == Number(theFirstSquareIDFiredByComputer) + (directions[0]))
+                            let secondSquare = freeSquares.find(square => square.getAttribute('data-id') == Number(theFirstSquareIDFiredByComputer) + (directions[1]))
+                            let thirdSquare = freeSquares.find(square => square.getAttribute('data-id') == Number(theFirstSquareIDFiredByComputer) + (directions[2]))
+                            let fourthSquare = freeSquares.find(square => square.getAttribute('data-id') == Number(theFirstSquareIDFiredByComputer) + (directions[3]))
+                            if (firstSquare == undefined && secondSquare == undefined && thirdSquare == undefined && fourthSquare == undefined) {
+                                preventDefault(undefined)
+                            } else {
+                                let getRandom = Math.floor(Math.random() * directions.length)
+                                let theSecondSquareIDToFire = Number(theFirstSquareIDFiredByComputer) + (directions[getRandom])
+                                // Check if this square is already fired
+                                let test = freeSquares.find(square => square.getAttribute('data-id') == theSecondSquareIDToFire)
+                                if (test == undefined) {
+                                    // Remvove random element from directions, so that it will no longer be used
+                                    directions.splice(getRandom, 1)
+                                    findSquareToFire()
+                                } else {
+                                    // get index of this square in freeSquares array
+                                    random = freeSquares.findIndex(square => square.getAttribute('data-id') == theSecondSquareIDToFire)
+                                    preventDefault(random)
+                                    variableToRememberDirectionToFire = directions[getRandom]
+                                    listiningForComputerToFireWithAlgorithms = true
+                                }
+                            }
+
+
+
+                        }
+                        findSquareToFire()
                     }
                     // SMART COMPUTER
                 }
@@ -617,13 +612,15 @@ startButton.addEventListener('click', () => {
                     if (className == 'ship5') ship5IsTakenComputer++
                     // Change the square
                     freeSquares[random].classList.add('shot')
-                    // freeSquares[random].classList.add('removeAnimation')
                     // check for win conditions
                     if (ship1IsTakenComputer == 3 && ship2IsTakenComputer == 4 && ship3IsTakenComputer == 4 && ship4IsTakenComputer == 5 && ship5IsTakenComputer == 6) {
                         isGameOver = true
                         moveInfo.textContent = 'Computer won!'
                         startButton.classList.add('restart')
                         startButton.textContent = 'Restart'
+                        startButton.disabled = false
+                        startButton.style.background = 'rgb(239 239 239)'
+                        notAllowFiringUntilAllShipsArePutted = true
                     } else {
                         userMove = true
                         moveInfo.textContent = 'Your move'
@@ -640,6 +637,7 @@ startButton.addEventListener('click', () => {
             }, 500)
         }
     }
+
     // Check if the game should be started or restarted
     let classOfTheButton = startButton.getAttribute('class')
     // If there are no "restart" then start the game
@@ -654,8 +652,9 @@ startButton.addEventListener('click', () => {
             moveInfo.textContent = 'Your move'
             moveInfo.style.color = 'green'
             moveInfo.style.backgroundColor = 'rgb(194, 228, 238)'
-            startGame()
             takeShipBoard.style.opacity = 0
+            startButton.disabled = true
+            startButton.style.background = 'grey'
         }
     } else {
         // The game should be restarted
@@ -683,10 +682,12 @@ startButton.addEventListener('click', () => {
         isGameOver = false
         isGameWin = false
         startButton.classList.remove('restart')
-        startGame()
+        notAllowComputerFireUntilTheGameIsNotRestarted = false
         // Change the button's text and output
         moveInfo.textContent = ''
         startButton.textContent = 'Start'
+        startButton.disabled = false
+        startButton.style.background = 'rgb(239 239 239)'
         // Change the rotate button style
         rotateButton.disabled = false
         rotateButton.style.background = 'rgb(239, 239, 239)'
@@ -694,5 +695,16 @@ startButton.addEventListener('click', () => {
         rotateButton.classList.add('active')
         // Remove background from info table
         moveInfo.style.backgroundColor = ''
+        // Refresh variables, connected with fired ships
+        ship1IsTakenComputer = 0
+        ship2IsTakenComputer = 0
+        ship3IsTakenComputer = 0
+        ship4IsTakenComputer = 0
+        ship5IsTakenComputer = 0
+        ship1IsTakenUser = 0
+        ship2IsTakenUser = 0
+        ship3IsTakenUser = 0
+        ship4IsTakenUser = 0
+        ship5IsTakenUser = 0
     }
-})
+}
