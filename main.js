@@ -4,26 +4,40 @@ const startButton = document.getElementById('start'),
     userBoard = document.querySelector('.user-board'),
     computerBoard = document.querySelector('.computer-board'),
     takeShipBoard = document.querySelector('.take-ship-board'),
-    ships = [
-        {
+    ships = [{
             name: 'ship1',
-            position: [[0, 1, 2], [0, 10, 20]]
+            position: [
+                [0, 1, 2],
+                [0, 10, 20]
+            ]
         },
         {
             name: 'ship2',
-            position: [[0, 1, 2, 3], [0, 10, 20, 30]]
+            position: [
+                [0, 1, 2, 3],
+                [0, 10, 20, 30]
+            ]
         },
         {
             name: 'ship3',
-            position: [[0, 1, 2, 3], [0, 10, 20, 30]]
+            position: [
+                [0, 1, 2, 3],
+                [0, 10, 20, 30]
+            ]
         },
         {
             name: 'ship4',
-            position: [[0, 1, 2, 3, 4], [0, 10, 20, 30, 40]]
+            position: [
+                [0, 1, 2, 3, 4],
+                [0, 10, 20, 30, 40]
+            ]
         },
         {
             name: 'ship5',
-            position: [[0, 1, 2, 3, 4, 5], [0, 10, 20, 30, 40, 50]]
+            position: [
+                [0, 1, 2, 3, 4, 5],
+                [0, 10, 20, 30, 40, 50]
+            ]
         }
     ],
     forbiddenHorizontally = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 2, 12, 22, 32, 42, 52, 62, 72, 82, 92, 3, 13, 23, 33, 43, 53, 63, 73, 83, 93, 4, 14, 24, 34, 44, 54, 64, 74, 84, 94, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95],
@@ -171,8 +185,9 @@ const generateShipsRandomlyForComputer = ship => {
     let randomStartSquare
     let randomDirection = Math.floor(Math.random() * 2)
     let multiplier = randomDirection == 0 ? 1 : 10
+
     function randomGenerator() {
-        let random = Math.abs(Math.floor(Math.random() * 100 - (ship.position[0].length - 1) * multiplier))
+        let random = Math.abs(Math.floor(Math.random() * 101 - (ship.position[0].length - 1) * multiplier))
         if (random < 0) {
             randomGenerator()
         } else {
@@ -412,6 +427,7 @@ function startGame() {
         moveInfo.textContent = 'Your move'
         moveInfo.style.backgroundColor = 'rgb(194, 228, 238)'
         computerSquares.forEach(square => square.addEventListener('click', () => userGame(square)))
+
         function userGame(square) {
             if (!userMove || isGameWin || isGameOver || rotateButton.classList.contains('active')) return
             // check if user missed or not
@@ -421,11 +437,97 @@ function startGame() {
                 let splittedClassName = square.getAttribute('class').split(' ')
                 let shipName = splittedClassName[1]
                 // increment numbers of taken squares
-                if (shipName == 'ship1') ship1IsTakenUser++
-                if (shipName == 'ship2') ship2IsTakenUser++
-                if (shipName == 'ship3') ship3IsTakenUser++
-                if (shipName == 'ship4') ship4IsTakenUser++
-                if (shipName == 'ship5') ship5IsTakenUser++
+                if (shipName == 'ship1') {
+                    ship1IsTakenUser++
+                    // check if the ship is destroyed
+                    if (ship1IsTakenUser == 3) {
+                        // style the squares so it is clear that the ship is destroyed
+                        const all_squares_ship1 = document.querySelectorAll('.computer-board>.ship1')
+                        all_squares_ship1.forEach(square => {
+                            // remove shot class (red circle) and align items to the center
+                            square.classList.remove('shot')
+                            square.style.display = 'flex'
+                            square.style.justifyContent = 'center'
+                            square.style.alignItems = 'center'
+                            square.style.color = 'red'
+                            // add skull icon
+                            square.innerHTML = `<i class="fas fa-skull-crossbones"></i>`
+                        })
+                    }
+                }
+                if (shipName == 'ship2') {
+                    ship2IsTakenUser++
+                    // check if the ship is destroyed
+                    if (ship2IsTakenUser == 4) {
+                        // style the squares so it is clear that the ship is destroyed
+                        const all_squares_ship1 = document.querySelectorAll('.computer-board>.ship2')
+                        all_squares_ship1.forEach(square => {
+                            // remove shot class (red circle) and align items to the center
+                            square.classList.remove('shot')
+                            square.style.display = 'flex'
+                            square.style.justifyContent = 'center'
+                            square.style.alignItems = 'center'
+                            square.style.color = 'red'
+                            // add skull icon
+                            square.innerHTML = `<i class="fas fa-skull-crossbones"></i>`
+                        })
+                    }
+                }
+                if (shipName == 'ship3') {
+                    ship3IsTakenUser++
+                    // check if the ship is destroyed
+                    if (ship3IsTakenUser == 4) {
+                        // style the squares so it is clear that the ship is destroyed
+                        const all_squares_ship1 = document.querySelectorAll('.computer-board>.ship3')
+                        all_squares_ship1.forEach(square => {
+                            // remove shot class (red circle) and align items to the center
+                            square.classList.remove('shot')
+                            square.style.display = 'flex'
+                            square.style.justifyContent = 'center'
+                            square.style.alignItems = 'center'
+                            square.style.color = 'red'
+                            // add skull icon
+                            square.innerHTML = `<i class="fas fa-skull-crossbones"></i>`
+                        })
+                    }
+                }
+                if (shipName == 'ship4') {
+                    ship4IsTakenUser++
+                    // check if the ship is destroyed
+                    if (ship4IsTakenUser == 5) {
+                        // style the squares so it is clear that the ship is destroyed
+                        const all_squares_ship1 = document.querySelectorAll('.computer-board>.ship4')
+                        all_squares_ship1.forEach(square => {
+                            // remove shot class (red circle) and align items to the center
+                            square.classList.remove('shot')
+                            square.style.display = 'flex'
+                            square.style.justifyContent = 'center'
+                            square.style.alignItems = 'center'
+                            square.style.color = 'red'
+                            // add skull icon
+                            square.innerHTML = `<i class="fas fa-skull-crossbones"></i>`
+                        })
+                    }
+                }
+                if (shipName == 'ship5') {
+                    ship5IsTakenUser++
+                    // check if the ship is destroyed
+                    if (ship5IsTakenUser == 6) {
+                        // style the squares so it is clear that the ship is destroyed
+                        const all_squares_ship1 = document.querySelectorAll('.computer-board>.ship5')
+                        all_squares_ship1.forEach(square => {
+                            // remove shot class (red circle) and align items to the center
+                            square.classList.remove('shot')
+                            square.style.display = 'flex'
+                            square.style.justifyContent = 'center'
+                            square.style.alignItems = 'center'
+                            square.style.color = 'red'
+                            // add skull icon
+                            square.innerHTML = `<i class="fas fa-skull-crossbones"></i>`
+                        })
+                    }
+                }
+
                 // check for win conditions 
                 if (ship1IsTakenUser == 3 && ship2IsTakenUser == 4 && ship3IsTakenUser == 4 && ship4IsTakenUser == 5 && ship5IsTakenUser == 6) {
                     isGameWin = true
@@ -706,5 +808,7 @@ function startGame() {
         ship3IsTakenUser = 0
         ship4IsTakenUser = 0
         ship5IsTakenUser = 0
+        // remove skull icons
+        document.querySelectorAll('.computer-board>div').forEach(el => el.innerHTML = '')
     }
 }
